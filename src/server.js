@@ -28,6 +28,7 @@ const init = async () => {
 
     try {
         await app.listen({
+            host: "0.0.0.0",
             port: process.env.PORT ?? 3000,
         });
     } catch (err) {
