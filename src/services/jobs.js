@@ -208,7 +208,7 @@ export class DockerJob extends Job {
 
         // Use --force-recreate and --remove-orphans together to ensure fresh containers and cleanup
         const compose = await runner.run(
-            "docker compose up -d --force-recreate --remove-orphans"
+            `docker compose up -d --force-recreate --remove-orphans --label repo_id=${repoId}`
         );
         if (compose.error) {
             console.error("compose", build);

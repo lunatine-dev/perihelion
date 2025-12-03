@@ -28,14 +28,14 @@ const extractPorts = (portsStr) => {
 
 export const getDockerContainers = async () => {
     const psResult = await runner.run(
-        'docker ps -a --format "{{.ID}}|{{.Names}}|{{.Status}}|{{.Ports}}"'
+        'docker ps -a --format "{{.ID}}|{{.Names}}|{{.Status}}|{{.Ports}}"',
     );
 
     if (psResult.error) {
         console.error(
             "Error running docker ps:",
             psResult.message,
-            psResult.stderr
+            psResult.stderr,
         );
         return [];
     }
@@ -50,4 +50,30 @@ export const getDockerContainers = async () => {
             const { status, details } = parseStatus(rawStatus);
             return { id, name, status, details, ports: extractPorts(ports) };
         });
+};
+
+export const getDockerContainer = async (repoId) => {
+    if (!repoId) return null;
+
+    const psResult = await runner.run(
+        `docker ps -a --filter "label=repo_id=${repoId}" --format "{{.ID}}|{{.Names}}|{{.Status}}|{{.Ports}}"`,
+    );
+
+    if (psResult.error) {
+        console.error(
+            `Error fetching container for repo ${repoId}:`,
+            psResult.message,
+            psResult.stderr,
+        );
+        return null;
+    }
+
+    if (!psResult.stdout) return null;
+
+    const line = psResult.stdout.trim().split("\n")[0];
+    if (!line) return null;
+
+    const [id, name, rawStatus, ports] = line.split("|");
+    const { status, details } = parseStatus(rawStatus);
+    return { id, name, status, details, ports: extractPorts(ports) };
 };

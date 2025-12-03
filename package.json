@@ -34,5 +34,8 @@
         "#services/*": [
             "./src/services/*.js"
         ]
+    },
+    "devDependencies": {
+        "prettier": "3.7.4"
     }
 }
