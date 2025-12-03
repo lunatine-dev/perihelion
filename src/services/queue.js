@@ -45,9 +45,8 @@ export const addJob = (job) => {
 };
 
 export const getJobById = (id) => {
-    let job = jobs.get(id);
-    delete job?.env;
-    return job;
+    // delete job?.env;
+    return jobs.get(id);
 };
 
 export const getAllJobs = () => {
