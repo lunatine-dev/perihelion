@@ -85,7 +85,7 @@ export class CloneJob extends Job {
         this.env = env;
     }
 
-    async run() {
+    run = async () => {
         this.logStatus("processing", "Validating repository");
         const repoId = await this.validateRepo();
 
@@ -157,13 +157,13 @@ export class CloneJob extends Job {
 
         // from here, we've either successfully cloned or pulled a repo, either way we have a repo in our local folders. Now we can copy the environment variables handed to us
         await fs
-            .writeFile(path.join(localRepoPath, ".env"), this.env, {
+            .writeFile(path.join(localRepoPath, ".env"), this.env ?? "", {
                 encoding: "utf8",
             })
             .catch(console.error);
 
         // Job complete, now it's up to the app to read the job completion event and add the docker job.
-    }
+    };
 }
 
 export class DockerJob extends Job {
