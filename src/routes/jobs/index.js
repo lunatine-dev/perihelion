@@ -23,12 +23,6 @@ export default async function (fastify) {
         if (type === "docker") {
             job = new DockerJob(owner, repo);
         } else if (type === "clone") {
-            console.log(
-                "==========CLONE JOB CREATION==========",
-                owner,
-                repo,
-                env,
-            );
             job = new CloneJob(owner, repo, env);
         }
 
