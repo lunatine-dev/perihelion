@@ -65,7 +65,7 @@ class Job {
             octokit.request("GET /repos/{owner}/{repo}", {
                 owner: this.owner,
                 repo: this.repo,
-            })
+            }),
         );
 
         if (repoErr) {
@@ -125,7 +125,7 @@ export class CloneJob extends Job {
             this.logStatus("processing", "Cloning repository");
             const cloneUrl = `https://oauth2:${process.env.GITHUB_PAT_TOKEN}@github.com/${this.owner}/${this.repo}.git`;
             const clone = await baseRunner.run(
-                `git clone ${cloneUrl} ${repoId}`
+                `git clone ${cloneUrl} ${repoId}`,
             );
 
             if (clone.error) {
@@ -156,7 +156,7 @@ export class CloneJob extends Job {
         // from here, we've either successfully cloned or pulled a repo, either way we have a repo in our local folders. Now we can copy the environment variables handed to us
         await fs
             .writeFile(path.join(localRepoPath, ".env"), this.env, "utf-8")
-            .catch(() => {});
+            .catch(console.error);
 
         // Job complete, now it's up to the app to read the job completion event and add the docker job.
     }
@@ -208,10 +208,10 @@ export class DockerJob extends Job {
 
         // Use --force-recreate and --remove-orphans together to ensure fresh containers and cleanup
         const compose = await runner.run(
-            `docker compose up -d --force-recreate --remove-orphans --label repo_id=${repoId}`
+            `docker compose up -d --force-recreate --remove-orphans --label repo_id=${repoId}`,
         );
         if (compose.error) {
-            console.error("compose", build);
+            console.error("compose", compose);
             throw new Error("Error composing docker app");
         }
 
